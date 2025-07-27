@@ -1,11 +1,15 @@
 const jwt=require("jsonwebtoken");
-const User=require("../src/model/user");
+const User=require("../model/user");
 
 const userAuth=async(req,res,next)=>{
  try{
 
   const cookies=req.cookies;
   const {token}=cookies;
+  if(!token){
+    throw new Error("Token is not valid")
+  }  
+
   const decodedObj= jwt.verify(token,"Ankit?710");
   const {_id}=decodedObj;
   const user=await User.findById(_id);

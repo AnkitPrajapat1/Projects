@@ -74,16 +74,24 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.methods.getJWT = async function () {
-    const user=this;
- const token= await jwt.sign({ _id: user._id }, "Ankit?710", { expiresIn: "1d" });
-
- return token 
+  const user = this;
+  const token = await jwt.sign({ _id: user._id }, "Ankit?710", {
+    expiresIn: "1d",
+  });
+  
+  if(!token){
+    throw new Error("Token is not valid")
+  }
+  return token;
 };
 
-userSchema.methods.validatePassword=async function(passwordInputByUser){
-  const user=this;
-  const hashedPassword=user.password;  
-  const isPasswordValid=await bcrypt.compare(passwordInputByUser,hashedPassword);
-  return isPasswordValid
-}
+userSchema.methods.validatePassword = async function (passwordInputByUser) {
+  const user = this;
+  const hashedPassword = user.password;
+  const isPasswordValid = await bcrypt.compare(
+    passwordInputByUser,
+    hashedPassword
+  );
+  return isPasswordValid;
+};
 module.exports = mongoose.model("User", userSchema);
